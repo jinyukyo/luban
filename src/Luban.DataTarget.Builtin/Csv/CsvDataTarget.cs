@@ -37,6 +37,10 @@ namespace Luban.DataExporter.Builtin.Csv
                         sb.Append(array.ElementType.TypeName);
                         sb.Append('s');
                     }
+                    else if(field.CType is TMap map)
+                    {
+                        sb.Append(string.Format("json_{0}map", map.KeyType.TypeName));
+                    }
                     else
                     {
                         sb.Append(field.Type);
@@ -87,6 +91,31 @@ namespace Luban.DataExporter.Builtin.Csv
 
                         sb.Append('}');
                         sb.Append('"');
+                    }
+                    else if(dType is DMap map)
+                    {
+                        sb.Append('{');
+                        var count = map.Datas.Count;
+                        int idx = 0;
+                        foreach (var (k, v) in map.Datas)
+                        {
+                            sb.Append(k);
+                            sb.Append(':');
+                            sb.Append(v);
+
+                            if (idx != count - 1)
+                            {
+                                sb.Append(',');
+                            }
+
+                            idx++;
+                        }
+
+                        sb.Append('}');
+                    }
+                    else if(dType is DString)
+                    {
+                        sb.Append(dType.ToString().Replace("\\","\""));
                     }
                     else
                     {
