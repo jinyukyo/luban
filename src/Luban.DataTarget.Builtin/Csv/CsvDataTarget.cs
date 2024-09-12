@@ -34,8 +34,15 @@ namespace Luban.DataExporter.Builtin.Csv
 
                     if(field.CType is TArray array)
                     {
-                        sb.Append(array.ElementType.TypeName);
-                        sb.Append('s');
+                      
+                        if (array.ElementType is TInt)
+                        {
+                            sb.Append("ints");
+                        }
+                        else if(array.ElementType is TBean)
+                        {
+                            sb.Append("json_funcs");
+                        }
                     }
                     else if(field.CType is TMap map)
                     {
@@ -67,7 +74,6 @@ namespace Luban.DataExporter.Builtin.Csv
                 {
                     var defField = defFields[index++];
 
-
                     if (!defField.NeedExport())
                     {
                         continue;
@@ -76,20 +82,87 @@ namespace Luban.DataExporter.Builtin.Csv
                     if (dType is DArray array)
                     {
                         sb.Append('"');
-                        sb.Append('{');
 
                         var count = array.Datas.Count;
                         for (int i = 0; i < count; i++)
                         {
-                            sb.Append(array.Datas[i].ToString());
+                            if (i == 0)
+                            {
+                                if(array.Datas[i] is DInt)
+                                {
+                                    sb.Append('{');
+                                }
+                                else if(array.Datas[i] is DBean)
+                                {
+                                    sb.Append('[');
+                                }
+                            }
+
+                            if(array.Datas[i] is DBean type)
+                            {
+                                //if (type.Type.IsAbstractType)
+                                //{
+                                //    sb.Append($"{{ _name:\"{type.ImplType.Name}\",");
+                                //}
+                                //else
+                                {
+                                    sb.Append('{');
+                                }
+
+                                var c = type.Fields.Count;
+
+                                for (int j = 0; j < c; j++)
+                                {
+                                    var hf = type.ImplType.HierarchyFields[j];
+                                    sb.Append('"');
+                                    sb.Append('"');
+                                    sb.Append(hf.Name);
+                                    sb.Append('"');
+                                    sb.Append('"');
+                                    sb.Append(':');
+                                    var f = type.Fields[j];
+                                    if (f != null)
+                                    {
+                                        sb.Append(f.ToString());
+                                    }
+                                    else
+                                    {
+                                        sb.Append("null");
+                                    }
+                                    if(j!=c-1)
+                                    {
+                                        sb.Append(',');
+                                    }
+                                       
+                                }
+                                sb.Append('}');
+                            }
+                            else
+                            {
+
+                                sb.Append(array.Datas[i].ToString());
+                            }
+
 
                             if (i != (count - 1))
                             {
                                 sb.Append(',');
                             }
+
+                            if (i == count - 1)
+                            {
+                                if (array.Datas[i] is DInt)
+                                {
+                                    sb.Append('}');
+                             
+                                }
+                                else if (array.Datas[i] is DBean)
+                                {
+                                    sb.Append(']');
+                                }
+                            }
                         } 
 
-                        sb.Append('}');
                         sb.Append('"');
                     }
                     else if(dType is DMap map)
@@ -134,7 +207,6 @@ namespace Luban.DataExporter.Builtin.Csv
             content[2] = 0xbf;
 
             Buffer.BlockCopy(bytes, 0, content, 3, bytes.Length);
-
             return new OutputFile()
             {
                 File = $"{table.OutputDataFile}.{OutputFileExt}",
