@@ -44,6 +44,10 @@ namespace Luban.DataExporter.Builtin.Csv
                         {
                             sb.Append("json_funcs");
                         }
+                        else if (array.ElementType is TLong)
+                        {
+                            sb.Append("longs");
+                        }
                     }
                     else if(field.CType is TMap map)
                     {
