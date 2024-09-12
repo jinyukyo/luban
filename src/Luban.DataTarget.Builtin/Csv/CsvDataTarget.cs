@@ -18,6 +18,7 @@ namespace Luban.DataExporter.Builtin.Csv
 
         public override OutputFile ExportTable(DefTable table, List<Record> records)
         {
+            //test
             StringBuilder sb = new StringBuilder();
 
             var fileds = records[0].Data.TType.DefBean.Fields;
