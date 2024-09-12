@@ -165,7 +165,7 @@ namespace Luban.DataExporter.Builtin.Csv
                                 {
                                     sb.Append('}');
                                 }
-                                else if (array.Datas[i] is DBean)
+                                else if (array.Datas[i] is DLong)
                                 {
                                     sb.Append('}');
                                 }
