@@ -40,14 +40,15 @@ namespace Luban.DataExporter.Builtin.Csv
                         {
                             sb.Append("ints");
                         }
-                        else if(array.ElementType is TBean)
-                        {
-                            sb.Append("json_funcs");
-                        }
                         else if (array.ElementType is TLong)
                         {
                             sb.Append("longs");
                         }
+                        else if(array.ElementType is TBean)
+                        {
+                            sb.Append("json_funcs");
+                        }
+                        
                     }
                     else if(field.CType is TMap map)
                     {
@@ -94,6 +95,10 @@ namespace Luban.DataExporter.Builtin.Csv
                             if (i == 0)
                             {
                                 if(array.Datas[i] is DInt)
+                                {
+                                    sb.Append('{');
+                                }
+                                else if (array.Datas[i] is DLong)
                                 {
                                     sb.Append('{');
                                 }
@@ -159,7 +164,10 @@ namespace Luban.DataExporter.Builtin.Csv
                                 if (array.Datas[i] is DInt)
                                 {
                                     sb.Append('}');
-                             
+                                }
+                                else if (array.Datas[i] is DBean)
+                                {
+                                    sb.Append('}');
                                 }
                                 else if (array.Datas[i] is DBean)
                                 {
