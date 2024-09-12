@@ -18,6 +18,7 @@ namespace Luban.DataExporter.Builtin.Csv
 
         public override OutputFile ExportTable(DefTable table, List<Record> records)
         {
+            //test
             StringBuilder sb = new StringBuilder();
 
             var fileds = records[0].Data.TType.DefBean.Fields;
@@ -42,6 +43,10 @@ namespace Luban.DataExporter.Builtin.Csv
                         else if(array.ElementType is TBean)
                         {
                             sb.Append("json_funcs");
+                        }
+                        else if (array.ElementType is TLong)
+                        {
+                            sb.Append("longs");
                         }
                     }
                     else if(field.CType is TMap map)
